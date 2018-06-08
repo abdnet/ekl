@@ -27,7 +27,8 @@ public class DocuementDao implements DAO<Document>{
 	}
 
 	public Document read(int obj) {
-
+		
+		
 		
 		return null;
 	}
