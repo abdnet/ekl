@@ -1,6 +1,8 @@
 package imnet.sid.fulltext.entities;
 
 import java.sql.Date;
+import java.util.Calendar;
+
 
 public class Document {
 	
@@ -10,36 +12,35 @@ public class Document {
 	private String 			docuement_type;
 	private String 			docuement_path;
 	private Date   			date_archive;
-	private int				document_confid;
 	private String			docuement_lang;
 	
+	Calendar calendar = Calendar.getInstance();
+	java.sql.Date currentdate = new java.sql.Date(calendar.getTime().getTime());
 	
 	/*
 	 * indexation
 	 * */
-	public Document(int document_id, String docuement_title, String docuement_author, String docuement_type,String docuement_path, Date date_archive, int document_confid,String lang) {
+	public Document(int document_id, String docuement_title, String docuement_author, String docuement_type,String docuement_path, String lang) {
 		super();
 		this.document_id = document_id;
 		this.docuement_title = docuement_title;
 		this.docuement_author = docuement_author;
 		this.docuement_type = docuement_type;
 		this.docuement_path = docuement_path;
-		this.date_archive = date_archive;
-		this.document_confid = document_confid;
+		this.date_archive = currentdate;
 		this.docuement_lang=lang;
 	}
 
 	/*
 	 * persistence
 	 * */
-	public Document(String docuement_title, String docuement_author, String docuement_type, String docuement_path,Date date_archive, int document_confid,String lang) {
+	public Document(String docuement_title, String docuement_author, String docuement_type, String docuement_path,String lang) {
 		super();
 		this.docuement_title = docuement_title;
 		this.docuement_author = docuement_author;
 		this.docuement_type = docuement_type;
 		this.docuement_path = docuement_path;
-		this.date_archive = date_archive;
-		this.document_confid = document_confid;
+		this.date_archive = currentdate;
 		this.docuement_lang=lang;
 	}
 
@@ -96,13 +97,7 @@ public class Document {
 		this.date_archive = date_archive;
 	}
 
-	public int getDocument_confid() {
-		return document_confid;
-	}
-
-	public void setDocument_confid(int document_confid) {
-		this.document_confid = document_confid;
-	}
+	
 
 	public String getDocuement_lang() {
 		return docuement_lang;
@@ -116,8 +111,15 @@ public class Document {
 	public String toString() {
 		return "Document [document_id=" + document_id + ", docuement_title=" + docuement_title + ", docuement_author="
 				+ docuement_author + ", docuement_type=" + docuement_type + ", docuement_path=" + docuement_path
-				+ ", date_archive=" + date_archive + ", document_confid=" + document_confid + ", docuement_lang="
+				+ ", date_archive=" + date_archive + ", document_confid=" + ", docuement_lang="
 				+ docuement_lang + "]";
+	}
+
+	public boolean isValid() {
+		
+		return (!this.getDocuement_author().equals("")&&!this.getDate_archive().equals("")&&
+				!this.getDocuement_lang().equals("")&&!this.getDocuement_path().equals("")&&
+				!this.getDocuement_title().equals("")&&!this.getDocuement_type().equals(""));
 	}
 	
 	

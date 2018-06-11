@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class CnxOracle {
+import imnet.sid.commun.util.OracleData;
+
+public class CnxOracle implements OracleData{
 	   private static Logger log = LogManager.getLogger(CnxOracle.class);
 	   static Connection connection_express = null;
 
@@ -20,19 +22,17 @@ public class CnxOracle {
 
 	private static Connection createConnexion() {
            try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-	        log.info("[ INFO ] Oracle JDBC Driver Registered!");
-	        connection_express = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@visualstudio:1521:xe", "ged", "ged");
-	        
+			Class.forName(ORACLE_DRIVER);
+			System.out.println("[ INFO ] Oracle JDBC Driver Registered!");
+	        connection_express = DriverManager.getConnection("jdbc:oracle:thin:@"+ DB_HOST+ ":"+ DB_PORT+ ":"+ DB_NAME,DB_USER,DB_PWD);
 	        return (connection_express==null)?null:connection_express;
 			
 		} catch (ClassNotFoundException e) {
-			log.warn("[ ERROR ] JDBC Driver problem");
+			System.out.println("[ ERROR ] JDBC Driver problem");
             e.printStackTrace();
             return null;
 		} catch (SQLException e) {
-			log.warn("[ ERROR ] Instance Oracle problem => Check output console");
+			System.out.println("[ ERROR ] Instance Oracle problem => Check output console");
 			e.printStackTrace();
 			return null;
 		}
@@ -48,7 +48,7 @@ public class CnxOracle {
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				log.warn("[ ERROR ] Close connetion problem => Check output console");
+				System.out.println("[ ERROR ] Close connetion problem => Check output console");
 
 				return false;
 			}
