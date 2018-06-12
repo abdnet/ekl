@@ -46,7 +46,7 @@ public class Document {
 
 
 	public Document() {
-		super();
+		this.date_archive = currentdate;
 	}
 
 	public int getDocument_id() {

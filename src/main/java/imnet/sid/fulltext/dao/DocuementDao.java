@@ -21,7 +21,7 @@ public class DocuementDao implements DAO<Document>{
 
 		 try {
 			PreparedStatement insert_doc = connection.prepareStatement(OracleData.DB_ADD_ONE_DOC);
-			if(obj.isValid()) {
+			
 				insert_doc.setString(1, obj.getDocuement_title());
 				insert_doc.setString(2, obj.getDocuement_author());
 				insert_doc.setString(3, obj.getDocuement_path());
@@ -32,10 +32,7 @@ public class DocuementDao implements DAO<Document>{
 				
 				System.out.println("\t[ INFO ] Le doc "+obj.getDocuement_title() +" a été bien ajoute");
 				return true;
-			}else {
-				System.out.println("\t[ ERROR ] Objet document \n"+obj);
-
-			}
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
