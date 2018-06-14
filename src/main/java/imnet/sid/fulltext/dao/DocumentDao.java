@@ -5,22 +5,25 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import imnet.sid.commun.Property.CnxOracle;
 import imnet.sid.commun.util.OracleData;
 import imnet.sid.fulltext.entities.Document;
 
-public class DocuementDao implements DAO<Document>{
+public class DocumentDao implements DAO<Document>{
 	
 	private Connection connection =CnxOracle.getConnexion();
+	private int lastinsertID;
 	
 	
 
 	public boolean create(Document obj) {
 		  System.out.println("[ INFO ] Processus de persistence");
+		  String generatedColumns[] = { "DOC_ID" };
 
 		 try {
-			PreparedStatement insert_doc = connection.prepareStatement(OracleData.DB_ADD_ONE_DOC);
+			PreparedStatement insert_doc = connection.prepareStatement(OracleData.DB_ADD_ONE_DOC,generatedColumns);
 			
 				insert_doc.setString(1, obj.getDocuement_title());
 				insert_doc.setString(2, obj.getDocuement_author());
@@ -29,8 +32,11 @@ public class DocuementDao implements DAO<Document>{
 				insert_doc.setString(5, obj.getDocuement_lang());
 				insert_doc.setString(6,obj.getDocuement_type());
 				insert_doc.executeUpdate();
-				
-				System.out.println("\t[ INFO ] Le doc "+obj.getDocuement_title() +" a été bien ajoute");
+				ResultSet rs = insert_doc.getGeneratedKeys();
+				if (rs.next()) {
+					this.lastinsertID = (int) rs.getInt(1);
+				}
+				System.out.println("\t[ INFO ] Le doc "+obj.getDocuement_title() +"["+this.lastinsertID +"] a été bien ajoute");
 				return true;
 			
 			
@@ -78,7 +84,14 @@ public class DocuementDao implements DAO<Document>{
 		return 0;
 	}
 
-	
+	public boolean createByBatch(List<Document> docs) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public int getLastRowID() {
+		return this.lastinsertID;
+	}
 	
 
 }

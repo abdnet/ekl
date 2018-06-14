@@ -53,48 +53,54 @@ public class Document {
 		return document_id;
 	}
 
-	public void setDocument_id(int document_id) {
+	public Document setDocument_id(int document_id) {
 		this.document_id = document_id;
+		return this;
 	}
 
 	public String getDocuement_title() {
 		return docuement_title;
 	}
 
-	public void setDocuement_title(String docuement_title) {
+	public Document setDocuement_title(String docuement_title) {
 		this.docuement_title = docuement_title;
+		return this;
 	}
 
 	public String getDocuement_author() {
 		return docuement_author;
 	}
 
-	public void setDocuement_author(String docuement_author) {
+	public Document setDocuement_author(String docuement_author) {
 		this.docuement_author = docuement_author;
+		return this;
 	}
 
 	public String getDocuement_type() {
 		return docuement_type;
 	}
 
-	public void setDocuement_type(String docuement_type) {
+	public Document setDocuement_type(String docuement_type) {
 		this.docuement_type = docuement_type;
+		return this;
 	}
 
 	public String getDocuement_path() {
 		return docuement_path;
 	}
 
-	public void setDocuement_path(String docuement_path) {
+	public Document setDocuement_path(String docuement_path) {
 		this.docuement_path = docuement_path;
+		return this;
 	}
 
 	public Date getDate_archive() {
 		return date_archive;
 	}
 
-	public void setDate_archive(Date date_archive) {
+	public Document setDate_archive(Date date_archive) {
 		this.date_archive = date_archive;
+		return this;
 	}
 
 	
@@ -103,8 +109,9 @@ public class Document {
 		return docuement_lang;
 	}
 
-	public void setDocuement_lang(String docuement_lang) {
+	public Document setDocuement_lang(String docuement_lang) {
 		this.docuement_lang = docuement_lang;
+		return this;
 	}
 
 	@Override

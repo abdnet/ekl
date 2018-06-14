@@ -8,7 +8,7 @@ public interface OracleData {
 	  /*CRUD request*/
 	  static final String DB_ADD_ONE_DOC ="INSERT INTO GED_DOC_FULLTEXT VALUES (DOC_SEQUENCE.NEXTVAL,?,?,?,?,?,?)";
 	  
-	  static final List<String> extension = Arrays.asList("docx","pdf");
+	
 
 	  
 	  
