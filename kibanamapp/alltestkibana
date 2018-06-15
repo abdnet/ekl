@@ -1,0 +1,1018 @@
+GET _xpack/security/_authenticate
+
+GET indextestapp/_search
+GET paris/_mapping/talk
+DELETE paris
+DELETE imnet
+GET /_cat/indices?v
+DELETE   customer
+PUT imnet
+{
+  "mappings": {
+    "talk":{
+      "properties": {
+        "id":{"type":"keyword"},
+        "title":{"type": "text"},
+        "prix":{"type": "double"}
+        
+      }
+    }
+  }
+}
+GET citation/_mapping/
+PUT imnet/talk/1
+{
+  "id":"dsss-4554",
+  "title":"lucene in action",
+  "prix":59.00
+}
+POST abdell/ds
+{
+  "id":"dsss-1245",
+  "title":"timoulay in action",
+  "prix":"fs"
+}
+
+GET /_search
+PUT citation/t/1
+{
+  "citation":"voici un exemple de text bla bla"
+}
+GET citation/_search
+{
+  "query": {
+    "match": {
+      "citation": "exemple"
+    }
+  }
+}
+
+PUT citation
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "default":{
+          "type":"frensh"
+        }
+      }
+    }
+  }
+}
+
+
+
+PUT fd
+{
+  "mappings": {
+    "user": {
+      "properties": {
+        "name": { "type": "text" },
+        "user_name": { "type": "keyword" },
+        "email": { "type": "keyword" }
+      }
+    },
+    "tweet": {
+      "properties": {
+        "content": { "type": "text" },
+        "user_name": { "type": "keyword" },
+        "tweeted_at": { "type": "date" }
+      }
+    }
+  }
+}
+GET test/_search
+{
+  "query": {
+    "bool": {
+      "must": { "match_all": {} },
+      "filter": {
+        "range": {
+          "age": {
+            "gte": 26
+          }
+        }
+      }
+    }
+  }
+}
+
+GET test/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_state": {
+      "terms": {
+        "field": "_id"}
+    }
+  }
+}
+
+GET my_indextest/_search
+{
+  "size": 0,
+  "query": {
+        "bool" : {
+            "must" : {
+                "query_string" : {
+                    "query" : "john"
+                }
+            }
+            }},
+  "aggs": {
+    "group_by_state": {
+      "terms": {
+        "field": "first_name.keyword","order": {
+          "average_balance": "asc"
+        }
+      },
+      "aggs": {
+        "average_balance": {
+          "avg": {
+            "field": "age"
+          }
+        }
+      }
+    }
+  }
+}
+GET my_indextest/_search
+{
+  "size": 0,
+  "aggs": {
+    "group_by_age": {
+      "range": {
+        "field": "age",
+        "ranges": [
+          {
+            "from": 20,
+            "to": 30
+          },
+          {
+            "from": 30,
+            "to": 40
+          },
+          {
+            "from": 40,
+            "to": 50
+          }
+        ]
+      },
+      "aggs": {
+        "group_by_gender": {
+          "terms": {
+            "field": "first_name.keyword"
+          },
+          "aggs": {
+            "average_balance": {
+              "avg": {
+                "field": "age"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+PUT my_index_imnet
+{
+  "mappings": {
+    "produit": {
+      "properties": {
+        "title": {
+          "type":     "text",
+          "analyzer": "standard",
+          "index": true
+        },
+        "prix":{
+          "type": "float",
+          "store": true
+        }
+      }
+    }
+  }
+}
+GET my_index_imnet/_mapping
+
+
+
+POST my_index_imnet/produit
+{
+  "title" : "GED",
+  "prix":30000
+}
+
+
+
+POST _bulk
+{ "index" : { "_index" : "my_index_imnet_v1", "_type" : "produit" } }
+{ "title" : "GED ,gestion document text","prix":40021 }
+
+
+
+GET my_index_imnet/_search
+
+GET my_index_imnet/_search
+
+POST _analyze
+{
+  "analyzer": "whitespace",
+  "text":     "The quick brown fox."
+}
+
+POST _analyze
+{
+  "tokenizer": "standard",
+  "filter":  [ "lowercase", "asciifolding" ],
+  "text":      "Is this déja vu?"
+}
+
+GET my_index_imnet_v2/_settings
+
+PUT my_index_imnet_v2
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "std_folded": { 
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding"
+          ]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "article": {
+      "properties": {
+        "content": {
+          "type": "text",
+          "analyzer": "std_folded",
+           "index": true,
+           "store": false
+        },
+        "id_bd":{
+          "type": "integer",
+          "store": true
+        }
+      }
+    }
+  }
+}
+
+
+
+GET my_index2/_analyze 
+{
+  "analyzer": "std_folded", 
+  "text":     "Is this déjà vu?"
+}
+
+GET my_index2/_analyze 
+{
+  "field": "my_text", 
+  "text":  "Is this déjà vu?"
+}
+POST _analyze
+{
+  "analyzer": "stop",
+  "text": "The 2 QUICK Brown-Foxes jumped over the lazy dog's bone."
+}
+
+
+PUT /my_index3
+{
+    "settings": {
+        "analysis": {
+            "filter": {
+                "my_stop": {
+                    "type":       "stop",
+                    "stopwords":  "_frensh_"
+                }
+            }
+        }
+    }
+}
+
+POST my_index3/_analyze
+{
+  "analyzer": "my_email_analyzer",
+  "text": "John_Smith@foo-bar.com"
+}
+PUT test2/_doc/52?op_type=create
+{
+    "user" : "kimchy",
+    "post_date" : "2009-11-15T14:12:12",
+    "message" : "trying out Elasticsearch"
+}
+
+
+PUT test3
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3, 
+            "number_of_replicas" : 2 
+        }
+    }
+}
+
+POST my_index_imnet/_search
+{
+    "query" : {
+        "match_all" : {}
+    }
+  
+}
+
+GET my_indextest/_search
+
+GET indextestapp/_mapping
+
+GET _search
+{
+    "query" : {
+        "term" : { "title" : "text" }
+    }
+}
+DELETE indextestapp
+
+#Test analyzer ES
+POST _analyze
+{
+  "analyzer": "whitespace",
+  "text":     "The quick brown-fox."
+} 
+
+POST _analyze
+{
+  "tokenizer": "standard",
+  "filter":  [ "lowercase", "asciifolding" ],
+  "text":      "Is this déja vu ?"
+}
+
+
+PUT index_analyze 
+{
+  "settings": {
+    "analysis": {
+      "std_folded":{
+        "type" : "custom",
+        "tokenizer" :"standard",
+        "filter":[
+          "lowercase",
+          "asciifolding"
+          ]
+      }
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties":{
+        "my_text":{
+          "type":"text",
+          "analyzer":"std_folded"
+        }
+      }
+    }
+  }
+}
+
+DELETE  my_index
+PUT my_index
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "std_folded": { 
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "asciifolding"
+          ]
+        },
+        "my_email_analyzer": {
+          "type":      "pattern",
+          "pattern":   "\\W|_", 
+          "lowercase": true
+        }
+      }
+    }
+  },
+  "mappings": {
+    "_doc": {
+      "properties": {
+        "my_text": {
+          "type": "text",
+          "analyzer": "std_folded" 
+        },
+        "email" :{
+          "type":"text",
+          "analyzer":"my_email_analyzer"
+        }
+      }
+    }
+  }
+}
+
+GET my_index/_analyze 
+{
+  "analyzer": "my_email_analyzer", 
+  "text":     "Is this déjà vu?"
+}
+
+
+GET my_index/_analyze 
+{
+  "field": "email", 
+  "text":  "idouhammou.12@gmail..fr.com"
+}
+
+
+GET /_search
+{
+    "query": {
+        "regexp":{
+            "name.first":{
+                "value":"s.*y",
+                "boost":1.2
+            }
+        }
+    }
+}
+
+GET /_search
+ {
+     "query": {
+        "fuzzy": {"title": "committat.Cyprum "}
+     }
+ }
+ 
+ 
+ 
+ GET /_search
+ {
+     "query": {
+         "fuzzy": {
+             "title": {
+                 "value": "procul",
+                 "boost": 1.0,
+                 "fuzziness": 10,
+                 "prefix_length": 12,
+                 "max_expansions": 50
+             }
+         }
+     }
+ } 
+ 
+ 
+  GET /_search
+ {
+     "query": {
+         "type": {
+             "value": "t"
+         }
+     }
+ } 
+ 
+  GET /_search
+ {
+     "query": {
+         "ids": {
+             "values": ["1", "2","11"]
+         }
+     }
+ } 
+ 
+ GET /_search
+ {
+     "query": {
+         "constant_score": {
+             "filtre": {
+                 "term": {"user": "kimchy"}
+             },
+             "boost": 1.2
+         }
+     }
+ } 
+ 
+ 
+ 
+ GET test/_search
+ {
+     "query": {
+         "function_score": {
+             "query": {"match_all": {}},
+             "boost": "12",
+             "random_score": {},  
+             "boost_mode": "sum"
+         }
+     }
+ } 
+ 
+ GET  /_search
+ {
+ "query": {
+   "multi_match": {
+    "query":    "elasticsearch insulam",
+      "fields": [ "title", "message" ] 
+   }
+   
+ }  
+
+ }
+ 
+ GET /_search
+ {
+     "query": {
+         "function_score": {
+           "query": {"match_all": {}},
+           "boost": "5",  
+           "functions": [
+               {
+                   "filter": {"match": {"title": "insulam "}},
+                   "random_score": {},  
+                   "weight": 2
+               },
+               {
+                   "filter": {"match": {"message": "elasticsearch"}},
+                   "weight": 4
+               }
+           ],
+           "max_boost": 4,
+           "score_mode": "max",
+           "boost_mode": "multiply",
+           "min_score": 0
+         }
+     }
+ } 
+ 
+ DELETE my_index_1
+GET my_index_1/_analyze
+{
+  "analyzer": "my_synonyms",
+  "text": "Elizabeth is the English queen"
+}
+ PUT /my_index_1
+ 
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "my_synonym_filter": {
+          "type": "synonym", 
+          "synonyms": [ 
+            "british,english",
+            "queen,monarch"
+          ]
+        }
+      },
+      "analyzer": {
+        "my_synonyms": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "my_synonym_filter" 
+          ]
+        }
+      }
+    }
+  }
+  
+}
+
+GET my_index_1/_analyze
+{
+  "analyzer" : "my_synonyms",
+  "text" : "Elizabeth is the English queen"
+}
+
+
+PUT indexa
+{
+	"settings": {
+		"index": {
+			"number_of_shards": 1,
+			"number_of_replicas": 0,
+			"analysis": {
+				"analyzer": {
+					"lowercase_keyword": {
+						"tokenizer": "keyword",
+						"filter": [
+							"lowercase"
+						]
+					}
+				}
+			}
+		}
+	},
+	"mappings": {
+		"type1": {
+			"properties": {
+				"titre": {
+					"type": "keyword",
+					"index": "true",
+					"store": "true"
+				},
+				"commentaire": {
+					"type": "text",
+					"store": "true",
+					"analyzer": "standard"
+				},
+				"copy": {
+					"copy_to": "commentaire",
+					"type": "text"
+				}
+			}
+		}
+	,
+	"type2": {
+		"properties": {
+			"title": {
+				"type": "keyword",
+				"index": "true",
+				"store": "true"
+			}
+		}
+	}}
+}
+
+GET indexa/_mapping
+
+DELETE  indexa
+DELETE indextestapp
+GET indextestapp/_mapping
+
+PUT /new_twitters/type1/1
+{
+  "title": "My first blog entry",
+  "cd":  "Just trying this out...",
+  "cosmmentaire":"rest"
+}
+
+POST _reindex
+{
+  "source": {
+    "index": "twitters"
+  },
+  "dest": {
+    "index": "new_twitters"
+  }
+}
+
+GET /_search
+{
+    "aggs": {
+        "statistics": {
+            "matrix_stats": {
+                "fields": ["title", "name"]
+            }
+        }
+    }
+}
+GET /_search
+{
+    "aggs" : {
+        "title" : {
+            "terms" : { "field" : "title" }
+        }
+    }
+}
+
+POST indextestapp/_flush
+GET my_indexx/_search
+GET indextestapp/_cache/clear
+DELETE /my_indexx/_doc/1
+GET /twitter,kimchy/_mapping/field/message
+GET /indextestapp/fielddata?v
+GET /_cat/indices/*inde*?v&s=index
+GET /_cat/indices?v&health=yellow
+GET /_all/_mapping/
+GET new_twitters/_search
+GET /_cat/nodeattrs?v&h=name,pid,attr,value
+GET /_cat/aliases?v
+GETGET _cat/shards
+GET /_cat/nodeattrs?v
+
+
+GET /_cat/master?v
+GET /_cat/nodeattrs?v
+
+DELETE my_token
+PUT my_token
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "my_analyzer": {
+          "tokenizer": "my_tokenizer"
+        }
+      },
+      "tokenizer": {
+        "my_tokenizer": {
+          "type": "ngram",
+          "min_gram": 3,
+          "max_gram": 4,
+          "token_chars": [
+            "letter",
+            "digit"
+          ]
+        }
+      }
+    }
+  }
+}
+
+POST my_token/_analyze
+{
+  "analyzer": "my_analyzer",
+  "text": "2 Quick Foxes sxhjf sh sdhjds hsjdhsd sdhsdjshdjshdsjd."
+}
+GET my_token/_mapping
+POST /my_token/_open
+POST /my_token/_close
+
+PUT movies
+{
+    "mappings" : {
+      "movie" : {
+        "properties" : {
+          "fields" : {
+            "properties" : {
+              "actors" : {
+                "type" : "text",
+                "fields" : {
+                  "array" : {
+                    "type" : "text",
+                    "index" : "not_analyzed"
+                  }
+                }
+              },
+              "directors" : {
+                "type" : "text",
+                "fields" : {
+                  "array" : {
+                    "type" : "text",
+                    "index" : "not_analyzed"
+                  }
+                }
+              },
+              "genres" : {
+                "type" : "text",
+                "fields" : {
+                  "array" : {
+                    "type" : "text",
+                    "index" : "not_analyzed"
+                  }
+                }
+              },
+              "image_url" : {
+                "type" : "text",
+                "fields" : {
+                  "array" : {
+					"type" : "text",
+					"index" : "not_analyzed"
+					}
+                }
+              },
+              "plot" : {
+                "type" : "text",
+                "fields" : {
+                  "keyword" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "rank" : {
+                "type" : "long"
+              },
+              "rating" : {
+                "type" : "float"
+              },
+              "release_date" : {
+                "type" : "date"
+              },
+              "running_time_secs" : {
+                "type" : "long"
+              },
+              "title" : {
+                "type" : "text",
+                "fields" : {
+                  "keyword" : {
+                    "type" : "keyword",
+                    "ignore_above" : 256
+                  }
+                }
+              },
+              "year" : {
+                "type" : "long"
+              }
+            }
+          },
+          "id" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          },
+          "type" : {
+            "type" : "text",
+            "fields" : {
+              "keyword" : {
+                "type" : "keyword",
+                "ignore_above" : 256
+              }
+            }
+          }
+        }
+      }
+	}
+}
+
+
+GET indextestapp/_mapping
+
+##plusieurs recherche en meme temps
+GET indextestapp/_msearch
+{}
+{"query" : {"match_all" : {}}, "from" : 0, "size" : 10}
+{}
+{"query" : {"match_all" : {}}}
+{"index" : "my_indexx"}
+{"query" : {"match_all" : {}}}
+
+
+POST _analyze
+{
+  "tokenizer": "path_hierarchy",
+  "text": "www.google.com/index/timoulay"
+}
+
+GET indextestapp/_search
+GET indextestapp/_stats/search,docs
+GET french_example/_stats
+GET indextestapp/_shard_stores
+DELETE /indextestapp/type1/LNkR3mIBnbUk0o6veMqK
+
+
+
+POST _bulk
+{ "index" : { "_index" : "test", "_type" : "_doc", "_id" : "1" } }
+{ "field1" : "value1" }
+{ "delete" : { "_index" : "test", "_type" : "_doc", "_id" : "2" } }
+{ "create" : { "_index" : "test", "_type" : "_doc", "_id" : "3" } }
+{ "field1" : "value3" }
+{ "update" : {"_id" : "1", "_type" : "_doc", "_index" : "test"} }
+{ "doc" : {"field2" : "value2"} }
+
+
+
+
+PUT inedxTest_1
+{
+   "data": {
+      "mappings": {
+         "people": {
+            "properties": {
+               "name": {
+                  "type": "keyword"
+               },
+               "address": {
+                  "type": "keyword"
+               }
+            }
+         }
+      }
+   }
+}
+
+
+
+DELETE testindex2/
+PUT testindex2
+{
+    "settings" : {
+        "number_of_shards" : 1
+    },
+    "mappings" : {
+        "user" : {
+            "properties" : {
+                "name" : { "type" : "text",
+                    "analyzer": "french",
+                  "PHONETIC":{
+                      "analyzer":"phonetic"
+                  }
+                },
+                "naissance" : { "type" : "date" },
+                "adresse" : { "type" : "text" }
+            }
+        }
+    }
+}
+
+GET my_index24/_mapping
+
+
+PUT /my_index22
+{
+  "settings": {
+    "analysis": {
+      "filter": {
+        "dbl_metaphone": { 
+          "type":    "phonetic",
+          "encoder": "double_metaphone"
+        }
+      },
+      "analyzer": {
+        "dbl_metaphone": {
+          "tokenizer": "standard",
+          "filter":    "dbl_metaphone" 
+        }
+      }
+    }
+  }
+}
+
+DELETE my_index24
+PUT /my_index24
+{
+    "settings" : {
+       "index" : {
+          "analysis" : {
+             "filter" : {
+                "beider_morse": {
+                    "type" : "phonetic",
+                    "encoder" : "beider_morse",
+                    "languageset" : [ "french", "english", "german" ]
+                }
+             },
+             "analyzer" : {
+                "phoneticAnalyzer" : {
+                    "type" : "custom",
+                    "tokenizer" : "standard",
+                    "filter" : ["standard", "lowercase", "stemmer", "beider_morse"]
+                }
+             }
+          }
+       }        
+    },
+    "mappings" : {
+       "users": {
+           "properties" : {
+               "nom" : {
+                   "type" : "text",
+                   "analyzer" : "phoneticAnalyzer"
+               },
+               "prenom" : {
+                   "type" : "text",
+                   "analyzer" : "phoneticAnalyzer"
+               }
+           }
+       }
+   }        
+}
+
+PUT my_index24/users/1
+{
+   "prenom" : "Yann",
+   "nom" : " Rimbault"
+}
+
+PUT /my_index22/my_type/3
+{
+  "name": "idouhammou abderrahman"
+}
+
+
+GET /my_index24/users/_search
+{
+  "query": {
+    "match": {
+      "nom": {
+        "query": "yann"
+      }
+    }
+  }
+}
+
+
+PUT /company
+{
+  "mappings": {
+    "branch": {},
+    "employee": {
+      "_parent": {
+        "type": "branch" 
+      }
+    }
+  }
+}
