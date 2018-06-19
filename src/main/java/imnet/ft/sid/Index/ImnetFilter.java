@@ -15,9 +15,9 @@ import imnet.ft.commun.util.ElasticSearchReservedWords;
 public class ImnetFilter {
 	
 	private String filter_name;
-	private boolean isDefault=false;
+	private boolean isDefault;
 	private Map<String,Map<String,Object>> filter_object; 
-	private List<String> defaultfilter = new ArrayList<String>();
+	private List<String> defaultfilter=new ArrayList<String>() ;
 	
 	private List<String> filterCreated =new ArrayList<String>();
 	private boolean isObject,isValid;
@@ -31,7 +31,7 @@ public class ImnetFilter {
 		filter_name = filter_name;
 		this.isDefault = filter_default;
 		this.filter_object = filter_object;
-		defaultfilter = defaultfilter;
+		this.defaultfilter = defaultfilter;
 	}
 	
 	
@@ -41,7 +41,7 @@ public class ImnetFilter {
 	}
 
 	public void setfilterCreated(List<String> filterCreated) {
-		filterCreated = filterCreated;
+		this.filterCreated = filterCreated;
 	}
 	public boolean isObject() {
 		return isObject;
@@ -56,18 +56,46 @@ public class ImnetFilter {
 		this.isValid = isValid;
 	}
 	public List<String> getdefaultfilter() {
-		return defaultfilter;
+		return this.defaultfilter;
 	}
 	public void setdefaultfilter(List<String> defaultfilter) {
-		defaultfilter = defaultfilter;
+		this.defaultfilter = defaultfilter;
 	}
 
 
 
-	public XContentBuilder getFilterXContent() throws IOException {
-		XContentBuilder filter= XContentFactory.jsonBuilder();
-			filter.startObject();
-					if(this.isDefault &&this.defaultfilter.size()>0) {
+	public String getFilter_name() {
+		return this.filter_name;
+	}
+
+
+
+	public boolean isDefault() {
+		return this.isDefault;
+	}
+
+
+
+	public Map<String, Map<String, Object>> getFilter_object() {
+		return this.filter_object;
+	}
+
+
+
+	public List<String> getDefaultfilter() {
+		return this.defaultfilter;
+	}
+
+
+
+	public List<String> getFilterCreated() {
+		return this.filterCreated;
+	}
+
+
+
+	public XContentBuilder getFilterXContent(XContentBuilder filter) throws IOException {
+					if(this.isDefault && this.defaultfilter.size()>0) {
 							this.isdefaultfilter();
 							filter.field(ElasticSearchReservedWords.FILTER.getText(), this.getdefaultfilter());
 							this.isObject=false;
@@ -75,7 +103,9 @@ public class ImnetFilter {
 							return filter.endObject();
 					}
 					else {	
+
 							if(this.filter_object!=null) {
+								isdefaultfilter();
 								filter.startObject(ElasticSearchReservedWords.FILTER.getText());
 								//filter.startObject("filter");
 								for(Entry<String,Map<String,Object>> entry:this.filter_object.entrySet()) {
@@ -89,12 +119,12 @@ public class ImnetFilter {
 								}
 								this.isObject=true;
 								this.isValid=true;
-								return filter.endObject().endObject();//Filter object <end>
+								return filter.endObject();//Filter object <end>
 								}	
 					}
-				return filter.endObject();			
+				return filter;			
 	}
-	private void isdefaultfilter() {
+	public void isdefaultfilter() {
 		ArrayList<String> filters = new ArrayList<String>();
 		for (String filter : this.getdefaultfilter()) {
 			if(ElasticSearchReservedFilters.filters.contains(filter))
@@ -105,6 +135,17 @@ public class ImnetFilter {
 		this.setdefaultfilter(filters);
 		this.setfilterCreated(filters);
 	}
+
+
+
+	@Override
+	public String toString() {
+		return "ImnetFilter [filter_name=" + filter_name + ", isDefault=" + isDefault + ", filter_object="
+				+ filter_object + ", defaultfilter=" + defaultfilter + ", filterCreated=" + filterCreated
+				+ ", isObject=" + isObject + ", isValid=" + isValid + "]";
+	}
+	
+	
 	
 	
 }

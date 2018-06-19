@@ -65,13 +65,14 @@ public class ImnetAnalyzer {
 	}
 
 
-	public XContentBuilder getAnalyzerXContent() throws IOException {
-		XContentBuilder analyzers= XContentFactory.jsonBuilder();
-				analyzers.startObject();
-				if(this.isDefault) {
+	public XContentBuilder getAnalyzerXContent(XContentBuilder analyzers) throws IOException {
+				    
+					if(this.isDefault) {
 							analyzers.field(ElasticSearchReservedWords.ANALYZER.getText(),this.analyzer_Type);
 				}
 				else {
+						
+					
 					analyzers.startObject(ElasticSearchReservedWords.ANALYZER.getText());
 
 							 if(this.analyzers.size()<=1&&!this.analyzers.get(this.analyzer_Name).get(ElasticSearchReservedWords.TYPE.getText()).equals("custom")) {
@@ -90,7 +91,16 @@ public class ImnetAnalyzer {
 												 	
 											 		}
 										 }else {
-										 analyzers.field(entry2.getKey(),entry2.getValue());
+											 if(entry2.getKey().equals("filter")) {
+												 System.out.println("analyzer debug");
+												 this.generatorFilterRaw(analyzers, (ImnetFilter)entry2.getValue());
+												 analyzers.field(entry2.getKey(),this.getAnalyzer_Filters());
+											 }else {
+												 System.out.println("analyzer debug2");
+
+												 analyzers.field(entry2.getKey(),entry2.getValue());
+
+											 }
 										 }
 									 }
 									 analyzers.endObject();
@@ -120,8 +130,26 @@ public class ImnetAnalyzer {
 				
 				
 
-		return analyzers.endObject().endObject();
+		return analyzers.endObject();
 		
+	}
+
+
+		public void generatorFilterRaw(XContentBuilder xc,ImnetFilter f) throws IOException {
+			XContentBuilder xcbis=xc;
+			if(f!=null) {
+				xcbis.startObject();
+				f.getFilterXContent(xcbis);
+				xcbis.endObject();
+				System.out.println(xcbis.bytes().utf8ToString());
+				this.analyzer_Filters=f.getFilterCreated();
+			}
+		}
+	@Override
+	public String toString() {
+		return "ImnetAnalyzer [isDefault=" + isDefault + ", analyzer_Name=" + analyzer_Name + ", analyzer_Type="
+				+ analyzer_Type + ", analyzer_Tokenizer=" + analyzer_Tokenizer + ", analyzer_Filters="
+				+ analyzer_Filters + ", analyzer_CharFilter=" + analyzer_CharFilter + ", analyzers=" + analyzers + "]";
 	}
 	
 	

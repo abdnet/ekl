@@ -18,7 +18,7 @@ public class FilterBuilder {
 	private String filter_name;
 	private boolean isDefault ;
 	private Map<String,Map<String,Object>> filter_object; 
-	private List<String> defaultfilter = new ArrayList<String>();
+	private List<String> defaultfilter =new ArrayList<String>();
 	
 	
 	
@@ -38,7 +38,7 @@ public class FilterBuilder {
 
 	}
 	public FilterBuilder setdefaultfilter(List<String> defaultfilter) {
-		defaultfilter = defaultfilter;
+		this.defaultfilter = defaultfilter;
 		return this;
 
 	}

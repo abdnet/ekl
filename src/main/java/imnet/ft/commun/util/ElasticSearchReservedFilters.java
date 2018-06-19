@@ -30,23 +30,14 @@ public interface ElasticSearchReservedFilters {
 
 	  static final List<String> tokenizer = Arrays.asList(
 			  "standard",
-			  "asciifolding",
-			  "synonym_graph",
+			  "letter",
 			  "lowercase",
-			  "uppercase",
-			  "nGram",
-			  "edgeNGram",
-			  "porter_stem",
-			  "stop",
-			  "keyword_marker",
-			  "phonetic",
-			  "synonym",
-			  "reverse",
-			  "elision",
-			  "truncate",
-			  "pattern_capture", //pour l'adresse mail ou postal
-			  "trim",
-			  "five_token_limit" //Limite le nombre de jetons indexés par document et par champ.
+			  "whitespace",
+			  "uax_url_email",
+			  "classic",
+			  "ngram",//par defaut min=1,max=2 et token_chars=null (letter,digit,whitespace,punctuation,symbol)
+			  "edge_ngram",
+			  "path_hierarchy"
 			  );
 	  
 	  
@@ -55,7 +46,6 @@ public interface ElasticSearchReservedFilters {
 			  "simple",
 			  "whitespace",
 			  "stop",
-			  "keyword",
 			  "keyword",
 			  "pattern",
 			  "fingerprint"
