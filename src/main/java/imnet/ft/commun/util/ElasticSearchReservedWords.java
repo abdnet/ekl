@@ -3,6 +3,7 @@ package imnet.ft.commun.util;
 public enum ElasticSearchReservedWords
 {
 	ANALYSIS("analysis"), 
+	
 	FILTER("filter"), 
 	TYPE("type"), 
 	STOP("stop"), 
@@ -50,12 +51,16 @@ public enum ElasticSearchReservedWords
 	PATH_CONF("path.conf"),
 	NUMBER_OF_SHARDS("number_of_shards"), 
 	NUMBER_OF_REPLICAS("number_of_replicas"), 
-	ANALYZER_SIMPLE("simple"), 
+	ANALYZER_SIMPLE("simple"),
+	SEARCH_ANALYZER("search_analyzer"),
+	INDEX_ANALYZER("index_analyzer"),
 	SYNONYMS_IGNORE_CASE("ignore_case"),
 	SYNONYMS_EXPAND("expand"), 
 	NESTED("nested"),
 	MAPPINGS("mappings"),
-	SETTINGS("settings")
+	SETTINGS("settings"),
+	STOPWORDS("stopwords/")
+	
 	
 	;
     

@@ -6,8 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.common.xcontent.XContentHelper;
+import org.elasticsearch.common.xcontent.XContentParser;
+import org.elasticsearch.common.xcontent.XContentParserUtils;
+import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.common.xcontent.json.JsonXContent;
 
 import imnet.ft.commun.util.ElasticSearchReservedFilters;
 import imnet.ft.commun.util.ElasticSearchReservedWords;
@@ -21,15 +27,15 @@ public class ImnetFilter {
 	
 	private List<String> filterCreated =new ArrayList<String>();
 	private boolean isObject,isValid;
-
-
+	private  XContentBuilder filter;
+	
 	
 	
 	public ImnetFilter(String filter_name, boolean filter_default, Map<String, Map<String, Object>> filter_object,
 			List<String> defaultfilter) {
 		super();
-		filter_name = filter_name;
-		this.isDefault = filter_default;
+		this.filter_name = filter_name;
+		this.isDefault = filter_default=false;
 		this.filter_object = filter_object;
 		this.defaultfilter = defaultfilter;
 	}
@@ -94,48 +100,68 @@ public class ImnetFilter {
 
 
 
-	public XContentBuilder getFilterXContent(XContentBuilder filter) throws IOException {
-					if(this.isDefault && this.defaultfilter.size()>0) {
-							this.isdefaultfilter();
-							filter.field(ElasticSearchReservedWords.FILTER.getText(), this.getdefaultfilter());
-							this.isObject=false;
-							this.isValid=true;
-							return filter.endObject();
-					}
-					else {	
+	public XContentBuilder getParser() {
+		return this.filter;
+	}
 
-							if(this.filter_object!=null) {
-								isdefaultfilter();
-								filter.startObject(ElasticSearchReservedWords.FILTER.getText());
-								//filter.startObject("filter");
+
+
+	public XContentBuilder getFilterXContent() throws IOException {
+
+						 filter= XContentFactory.jsonBuilder();
+						filter.startObject();
+						if(this.filter_object!=null) {
+							if(!this.isADefaultFilterMap(this.filter_object)) {
 								for(Entry<String,Map<String,Object>> entry:this.filter_object.entrySet()) {
-									filter.startObject(entry.getKey());//filter name object <start>
-									Map<String,Object> option= entry.getValue();
-									for(Entry<String,Object> entry2:option.entrySet()) {
-										filter.field(entry2.getKey(),entry2.getValue());
+									if(entry.getValue()==null) {
+										this.getdefaultfilter().add(entry.getKey());
+
+									}else{
+										if(!this.filterCreated.contains(entry.getKey().toLowerCase())) {
+											filter.startObject(entry.getKey().toLowerCase());
+											Map<String,Object> options = entry.getValue();
+											for(Entry<String,Object> option:options.entrySet()) {
+												filter.field(option.getKey(),option.getValue());
+											}
+											this.filterCreated.add(entry.getKey());
+
+											filter.endObject();
+										}
 									}
-									this.filterCreated.add(entry.getKey());
-									filter.endObject();//filter name object <end>
 								}
-								this.isObject=true;
-								this.isValid=true;
-								return filter.endObject();//Filter object <end>
-								}	
+							}else {
+								//les filters par defaut (check ElasticSearchReservedFilters.java ->filter list
+								this.isDefault=true;
+								for(Entry<String,Map<String,Object>> entry:this.filter_object.entrySet()) {
+									this.defaultfilter.add(entry.getKey());
+
+								}
+							}
+							this.isdefaultfilter();
+
 					}
+				System.out.println(filter.endObject().string());
 				return filter;			
 	}
+
+	
 	public void isdefaultfilter() {
-		ArrayList<String> filters = new ArrayList<String>();
 		for (String filter : this.getdefaultfilter()) {
-			if(ElasticSearchReservedFilters.filters.contains(filter))
-				filters.add(filter);
+			if(ElasticSearchReservedFilters.filters.contains(filter)&&!this.filterCreated.contains(filter))
+				this.filterCreated.add(filter);
 			else
 				System.out.println("[ WARN ] le filter * "+filter+" * n'est pas valide");
 		}
-		this.setdefaultfilter(filters);
-		this.setfilterCreated(filters);
 	}
 
+	public boolean isADefaultFilterMap(Map<String,Map<String,Object>> filters) {
+		boolean defaultFilter=true;
+					
+			for(Entry<String,Map<String,Object>> entry:filters.entrySet()) {
+				if(entry.getValue()!=null) {return !defaultFilter;}
+			}
+		return defaultFilter;
+	}
 
 
 	@Override

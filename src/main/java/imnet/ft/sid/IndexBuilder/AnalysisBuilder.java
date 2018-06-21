@@ -1,5 +1,7 @@
 package imnet.ft.sid.IndexBuilder;
 
+import java.util.*;
+
 import imnet.ft.sid.Index.ImnetAnalysis;
 import imnet.ft.sid.Index.ImnetAnalyzer;
 import imnet.ft.sid.Index.ImnetCharFilter;
@@ -12,6 +14,7 @@ public class AnalysisBuilder {
 	private ImnetTokenizer imnetTokenizer;
 	private ImnetCharFilter imnetCharFilter;
 	private ImnetFilter imnetFilter;
+	private List<ImnetFilter> listFilter =new ArrayList<ImnetFilter>();
 	
 	
 	
@@ -28,13 +31,13 @@ public class AnalysisBuilder {
 		return this;
 	}
 	public AnalysisBuilder setImnetFilter(ImnetFilter imnetFilter) {
-		this.imnetFilter = imnetFilter;
+		this.listFilter.add(imnetFilter);
 		return this;
 	}
 	
 	
 	public ImnetAnalysis build() {
-		return new ImnetAnalysis(imnetAnalyzer, imnetTokenizer, imnetCharFilter, imnetFilter);
+		return new ImnetAnalysis(imnetAnalyzer, imnetTokenizer, imnetCharFilter, listFilter);
 	}
 	
 	

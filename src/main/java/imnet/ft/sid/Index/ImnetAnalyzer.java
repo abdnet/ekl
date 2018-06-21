@@ -66,7 +66,6 @@ public class ImnetAnalyzer {
 
 
 	public XContentBuilder getAnalyzerXContent(XContentBuilder analyzers) throws IOException {
-				    
 					if(this.isDefault) {
 							analyzers.field(ElasticSearchReservedWords.ANALYZER.getText(),this.analyzer_Type);
 				}
@@ -74,13 +73,15 @@ public class ImnetAnalyzer {
 						
 					
 					analyzers.startObject(ElasticSearchReservedWords.ANALYZER.getText());
+					 System.out.println("analyzer debug 00");
 
 							 if(this.analyzers.size()<=1&&!this.analyzers.get(this.analyzer_Name).get(ElasticSearchReservedWords.TYPE.getText()).equals("custom")) {
 								 for(Entry<String,Map<String,Object>> entry:this.analyzers.entrySet()) {
 									 analyzers.startObject(entry.getKey());
 									 Map<String,Object> option = entry.getValue();
 									 for(Entry<String,Object> entry2:option.entrySet()) {
-										 
+										 System.out.println("analyzer debug 0");
+
 										 if(entry2.getKey().equals("type")) {
 											 if(ElasticSearchReservedFilters.analyzers.contains(entry2.getValue())&&!entry2.getValue().equals("custom")) {
 												 analyzers.field(ElasticSearchReservedWords.TYPE.getText(),entry2.getValue());
@@ -93,7 +94,7 @@ public class ImnetAnalyzer {
 										 }else {
 											 if(entry2.getKey().equals("filter")) {
 												 System.out.println("analyzer debug");
-												 this.generatorFilterRaw(analyzers, (ImnetFilter)entry2.getValue());
+												 analyzers.field(ElasticSearchReservedWords.FILTER.getText(),this.generatorFilterRaw((ImnetFilter)entry2.getValue()));
 												 analyzers.field(entry2.getKey(),this.getAnalyzer_Filters());
 											 }else {
 												 System.out.println("analyzer debug2");
@@ -115,8 +116,10 @@ public class ImnetAnalyzer {
 										 if(ElasticSearchReservedFilters.analyzers_options.contains(entry2.getKey())) {
 											 //vérification de tokenzer
 											 //verification char filter
-											
-											 analyzers.field(entry2.getKey(),entry2.getValue());
+											 if(entry2.getKey().equals("filter")) {												 
+												 analyzers.field(ElasticSearchReservedWords.FILTER.getText(),this.generatorFilterRaw((ImnetFilter)entry2.getValue()));
+											 }else{
+											 analyzers.field(entry2.getKey(),entry2.getValue());}
 										 }
 									 }
 									 analyzers.endObject();
@@ -135,15 +138,12 @@ public class ImnetAnalyzer {
 	}
 
 
-		public void generatorFilterRaw(XContentBuilder xc,ImnetFilter f) throws IOException {
-			XContentBuilder xcbis=xc;
-			if(f!=null) {
-				xcbis.startObject();
-				f.getFilterXContent(xcbis);
-				xcbis.endObject();
-				System.out.println(xcbis.bytes().utf8ToString());
-				this.analyzer_Filters=f.getFilterCreated();
-			}
+		public List<String> generatorFilterRaw(ImnetFilter ff) throws IOException {
+			ImnetFilter f=ff;
+			
+			
+			f.getFilterXContent();
+			return f.getFilterCreated();
 		}
 	@Override
 	public String toString() {
