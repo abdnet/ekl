@@ -67,8 +67,9 @@ public class ImnetAnalyzer {
 
 	public XContentBuilder getAnalyzerXContent(XContentBuilder analyzers) throws IOException {
 					if(this.isDefault) {
-							analyzers.field(ElasticSearchReservedWords.ANALYZER.getText(),this.analyzer_Type);
-				}
+							//analyzers.field(ElasticSearchReservedWords.ANALYZER.getText(),this.analyzer_Type);
+							return analyzers.endObject();
+					}
 				else {
 						
 					

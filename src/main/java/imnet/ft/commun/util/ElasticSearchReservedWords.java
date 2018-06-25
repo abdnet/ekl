@@ -41,11 +41,28 @@ public enum ElasticSearchReservedWords
 	INDEX_MAPPER_DYNAMIC("index.mapper.dynamic"), 
 	DEFAULT("_default_"), 
 	DYNAMIC("dynamic"), 
+	FIELDDATA("fielddata"), 
+	GEOHASH("geohash"), 
+	GEOHASH_PRECISION("geohash_precision"), 
+	GEOHASH_PREFIX("geohash_prefix"), 
+	IGNORE_ABOVE("ignore_above"), 
+	IGNORE_MALFORMED("ignore_malformed"), 
+	INCLUDE_IN_ALL("include_in_all"), 
+	INDEX_OPTIONS("index_options"), 
+	LAT_LON("lat_lon"), 
 	SOURCE("_source"), 
 	ENABLED("enabled"), 
+	TERM_VECTOR("term_vector"), 
 	INTEGER("integer"), 
 	CLUSTER_NAME("cluster.name"), 
 	PATH_DATA("path.data"),
+	BOOST("boost"),
+	NORMS("norms"),
+	POSITION_INCREMENT_GEP("position_increment_gap"),
+	NULL_VALUE("null_value"),
+	COERCE("coerce"),
+	DOC_VALUES("doc_values"),
+	COPY_TO("copy_to"),
 	PATH_WORK("path.work"),
 	PATH_LOG("path.log"), 
 	PATH_CONF("path.conf"),
@@ -59,7 +76,8 @@ public enum ElasticSearchReservedWords
 	NESTED("nested"),
 	MAPPINGS("mappings"),
 	SETTINGS("settings"),
-	STOPWORDS("stopwords/")
+	STOPWORDS("stopwords/"),
+	CLIENTTRANSPORTSNIFF("client.transport.sniff")
 	
 	
 	;

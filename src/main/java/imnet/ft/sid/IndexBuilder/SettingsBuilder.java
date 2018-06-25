@@ -3,6 +3,7 @@ package imnet.ft.sid.IndexBuilder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 
 import imnet.ft.sid.Index.ImnetAnalysis;
+import imnet.ft.sid.Index.ImnetSettings;
 
 public class SettingsBuilder {
 
@@ -12,29 +13,33 @@ public class SettingsBuilder {
 		
 		
 		
-		
-		public int getShards() {
-			return shards;
-		}
-		public int getReplicas() {
-			return replicas;
-		}
-		public ImnetAnalysis getAnalysis() {
-			return analysis;
-		}
+	
 	
 		
 		
+		public SettingsBuilder setShards(int shards) {
+			this.shards = shards;
+			return this;
+		}
+
+		public SettingsBuilder setReplicas(int replicas) {
+			this.replicas = replicas;
+			return this;
+		}
+		public SettingsBuilder setAnalysis(ImnetAnalysis analysis) {
+			this.analysis = analysis;
+			return this;
+		}
 		@Override
 		public String toString() {
 			return "SettingsBuilder [shards=" + shards + ", replicas=" + replicas + ", analysis=" + analysis + "]";
 		}
 		
-		
-		public XContentBuilder getXContentSettings() {
-			
-			return null;
-			
+		public ImnetSettings build() {
+			return new ImnetSettings(shards, replicas, analysis);
 		}
+		
+		
+		
 		
 }
