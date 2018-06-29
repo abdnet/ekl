@@ -1,9 +1,20 @@
 package imnet.ft.sid.crud;
 
+
 import org.apache.log4j.Logger;
+import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.cluster.health.ClusterIndexHealth;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.rest.RestStatus;
+
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 public class ClusterCrud {
 	
@@ -22,29 +33,51 @@ public class ClusterCrud {
 	public void createNewIndex(String title,XContentBuilder schema) {
 		logger.info("ClusterCrud : Creation d'un nouveau index : En cours");
 		CreateIndexResponse createIndex = null;
-		
-		if(!this.existIndex(title)) {
+		System.out.println("##################################################");
+		System.out.println(schema.bytes().utf8ToString());
+		System.out.println("##################################################");
+
 			createIndex = client.admin()
 					.indices()
 					.prepareCreate(title.toLowerCase())
 					.setSource(schema)
 					.execute()
 					.actionGet();
-			logger.info("ClusterCrud : Creation d'un nouveau index : Ok! ");
-		}
-		else {
-			logger.warn("ClusterCrud : Creation d'un nouveau index ");
-
-		}
+		
+			if(createIndex.isAcknowledged())
+				logger.info("Création d'un nouveau index : Ok! ");
+			else
+				logger.warn("Création d'un nouveau index --> ES response [" + createIndex.isAcknowledged()+"]");
 	}
 	
 	
-	public void getIndexInfo(String index) {
-		
+	public void getIndexInfo(String indexx,String type) {
+		GetSettingsResponse response = client.admin().indices()
+		        .prepareGetSettings(indexx).get();                           
+		for (ObjectObjectCursor<String, Settings> cursor : response.getIndexToSettings()) { 
+		    String index = cursor.key;                                                      
+		    Settings settings = cursor.value;                                               
+		    Integer shards = settings.getAsInt("index.number_of_shards", null);             
+		    Integer replicas = settings.getAsInt("index.number_of_replicas", null);
+		    System.out.println("index key "+index+" shards "+shards+" replicas "+replicas+" \n\n settings "+settings.size());
+		}
 	}
 	
 	public void getAllIndex(String cluster) {
-		
+		ClusterHealthResponse healths = client.admin().cluster().prepareHealth().get(); 
+    	String clusterName = healths.getClusterName();              
+    	int numberOfDataNodes = healths.getNumberOfDataNodes();     
+    	int numberOfNodes = healths.getNumberOfNodes();             
+
+    	for (ClusterIndexHealth health : healths.getIndices().values()) { 
+    		String type = healths.getClusterName();
+    	    String index = health.getIndex();                       
+    	    int numberOfShards = health.getNumberOfShards();        
+    	    int numberOfReplicas = health.getNumberOfReplicas();    
+    	    ClusterHealthStatus status = health.getStatus();
+    	    
+    	    System.out.println("Cluster "+healths.getUnassignedShards()+" index "+index+" shards "+numberOfShards+" replicat "+numberOfReplicas+" status "+status.name());
+    	}
 	}
 	
 	public void updateIndex() {
@@ -52,7 +85,16 @@ public class ClusterCrud {
 	}
 	
 	public void deleteIndex(String index) {
-		
+		try {
+			DeleteIndexRequest request = new DeleteIndexRequest(index);
+			client.admin().indices().delete(request);
+			logger.info("L'index  < " + index + " > a été supprimé avec succès");
+
+		} catch (ElasticsearchException exception) {
+			if (exception.status() == RestStatus.NOT_FOUND) {
+				logger.error("L'index < " + index + " > n'existe pas");
+			}
+		}
 	}
 
 	

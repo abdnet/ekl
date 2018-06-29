@@ -4,25 +4,25 @@ public class ESConfiguration {
 	
 	private String cluster;
 	private String hostIP;
-	private Double portCLI;
-	private Double portTransport;
-	private String Name;
-	private int node;
+	private String portCLI;
+	private String portTransport;
+	private int replicas;
 	private int shard;
+	private String transportSniff;
 	
 	
 	
 	
-	public ESConfiguration(String cluster, String hostIP, Double portCLI, Double portTransport, String name, int node,
-			int shard) {
+	public ESConfiguration(String cluster, String hostIP, String portCLI, String portTransport, int replicas,
+			int shard,String transportSniff) {
 		super();
 		this.cluster = cluster;
 		this.hostIP = hostIP;
 		this.portCLI = portCLI;
 		this.portTransport = portTransport;
-		Name = name;
-		this.node = node;
+		this.replicas = replicas;
 		this.shard = shard;
+		this.transportSniff=transportSniff;
 	}
 
 
@@ -41,8 +41,9 @@ public class ESConfiguration {
 
 
 
-	public void setCluster(String cluster) {
+	public ESConfiguration setCluster(String cluster) {
 		this.cluster = cluster;
+		return this;
 	}
 
 
@@ -55,65 +56,46 @@ public class ESConfiguration {
 
 
 
-	public void setHostIP(String hostIP) {
+	public ESConfiguration setHostIP(String hostIP) {
 		this.hostIP = hostIP;
+		return this;
 	}
 
 
 
 
-	public Double getPortCLI() {
+	public String getPortCLI() {
 		return portCLI;
 	}
 
 
 
 
-	public void setPortCLI(Double portCLI) {
+	public ESConfiguration setPortCLI(String portCLI) {
 		this.portCLI = portCLI;
+		return this;
 	}
 
 
 
 
-	public Double getPortTransport() {
+	public String getPortTransport() {
 		return portTransport;
 	}
 
 
 
 
-	public void setPortTransport(Double portTransport) {
+	public ESConfiguration setPortTransport(String portTransport) {
 		this.portTransport = portTransport;
+		return this;
 	}
 
 
 
 
-	public String getName() {
-		return Name;
-	}
 
 
-
-
-	public void setName(String name) {
-		Name = name;
-	}
-
-
-
-
-	public int getNode() {
-		return node;
-	}
-
-
-
-
-	public void setNode(int node) {
-		this.node = node;
-	}
 
 
 
@@ -125,8 +107,39 @@ public class ESConfiguration {
 
 
 
-	public void setShard(int shard) {
+	public ESConfiguration setShard(int shard) {
 		this.shard = shard;
+		return this;
+	}
+
+
+
+
+	public int getReplicas() {
+		return replicas;
+	}
+
+
+
+
+	public ESConfiguration setReplicas(int replicas) {
+		this.replicas = replicas;
+		return this;
+	}
+
+
+
+
+	public String isTransportSniff() {
+		return transportSniff;
+	}
+
+
+
+
+	public ESConfiguration setTransportSniff(String transportSniff) {
+		this.transportSniff = transportSniff;
+		return this;
 	}
 
 
@@ -134,9 +147,12 @@ public class ESConfiguration {
 
 	@Override
 	public String toString() {
-		return "ClusterES [cluster=" + cluster + ", hostIP=" + hostIP + ", portCLI=" + portCLI + ", portTransport="
-				+ portTransport + ", Name=" + Name + ", node=" + node + ", shard=" + shard + "]";
+		return "ESConfiguration [cluster=" + cluster + ", hostIP=" + hostIP + ", portCLI=" + portCLI
+				+ ", portTransport=" + portTransport + ", replicas=" + replicas + ", shard=" + shard
+				+ ", transportSniff=" + transportSniff + "]";
 	}
+
+
 	
 	
 	
