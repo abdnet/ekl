@@ -1,0 +1,33 @@
+
+//setting par defaut
+.startObject(ElasticSearchReservedWords.SETTINGS.getText())
+						.startObject(ElasticSearchReservedWords.INDEX.getText())
+							.field(ElasticSearchReservedWords.NUMBER_OF_SHARDS.getText(),1)
+							.field(ElasticSearchReservedWords.NUMBER_OF_REPLICAS.getText(),5)
+						.startObject(ElasticSearchReservedWords.ANALYSIS.getText())
+							.startObject(ElasticSearchReservedWords.ANALYZER.getText())
+								.startObject(ElasticSearchReservedWords.SEARCH_ANALYZER.getText())
+									.field(ElasticSearchReservedWords.TYPE.getText(),"custom")
+									.field(ElasticSearchReservedWords.TOKENIZER.getText(),ElasticSearchReservedWords.STANDARD.getText())
+									.field(ElasticSearchReservedWords.FILTER.getText())
+								.endObject()
+							.endObject()
+							
+							.startObject(ElasticSearchReservedWords.TOKENIZER.getText())
+							
+							.endObject()
+					
+							.startObject(ElasticSearchReservedWords.CHAR_FILTER.getText())
+							
+							.endObject()
+							
+							.startObject(ElasticSearchReservedWords.FILTER.getText())
+								.startObject("french_stop")
+									.field(ElasticSearchReservedWords.TYPE.getText(),ElasticSearchReservedWords.STOP.getText())
+									.field("stopwords","_french_")
+								.endObject()
+							.endObject()
+							
+							.endObject()
+							.endObject()
+					.endObject()
