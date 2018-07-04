@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
 
 import imnet.ft.commun.util.ElasticSearchReservedFilters;
 import imnet.ft.commun.util.ElasticSearchReservedWords;
@@ -19,7 +19,9 @@ public class ImnetAnalyzer {
 	private List<String> analyzer_Filters=null;
 	private ImnetCharFilter analyzer_CharFilter;
 	private Map<String,Map<String,Object>> analyzers =null;
-	
+	private Map<String,String> analyzerCreated= new HashMap<String,String>();
+	private static Logger logger = Logger.getLogger(ImnetAnalyzer.class);
+
 	
 	
 	public ImnetAnalyzer(boolean isDefault, String analyzer_Name, String analyzer_Type, String analyzer_Tokenizer,
@@ -45,6 +47,11 @@ public class ImnetAnalyzer {
 	}
 
 
+	public Map<String, String> getAnalyzerCreated() {
+		return analyzerCreated;
+	}
+
+
 	public String getAnalyzer_Type() {
 		return analyzer_Type;
 	}
@@ -67,43 +74,43 @@ public class ImnetAnalyzer {
 
 	public XContentBuilder getAnalyzerXContent(XContentBuilder analyzers) throws IOException {
 					if(this.isDefault) {
+						
 							//analyzers.field(ElasticSearchReservedWords.ANALYZER.getText(),this.analyzer_Type);
 							return analyzers.endObject();
 					}
 				else {
 						
-					
+
 					analyzers.startObject(ElasticSearchReservedWords.ANALYZER.getText());
-					 System.out.println("analyzer debug 00");
 
 							 if(this.analyzers.size()<=1&&!this.analyzers.get(this.analyzer_Name).get(ElasticSearchReservedWords.TYPE.getText()).equals("custom")) {
 								 for(Entry<String,Map<String,Object>> entry:this.analyzers.entrySet()) {
 									 analyzers.startObject(entry.getKey());
 									 Map<String,Object> option = entry.getValue();
 									 for(Entry<String,Object> entry2:option.entrySet()) {
-										 System.out.println("analyzer debug 0");
 
 										 if(entry2.getKey().equals("type")) {
 											 if(ElasticSearchReservedFilters.analyzers.contains(entry2.getValue())&&!entry2.getValue().equals("custom")) {
 												 analyzers.field(ElasticSearchReservedWords.TYPE.getText(),entry2.getValue());
 											 }
 											 else {
-												 	System.out.println("[ WARN ] Analyzer <"+entry2.getValue()+"> n'est pas valide"); 
+												 	logger.info(" Analyzer <"+entry2.getValue()+"> n'est pas valide"); 
 												 	return null;
 												 	
 											 		}
 										 }else {
 											 if(entry2.getKey().equals("filter")) {
-												 System.out.println("analyzer debug");
 												 analyzers.field(ElasticSearchReservedWords.FILTER.getText(),this.generatorFilterRaw((ImnetFilter)entry2.getValue()));
 												 analyzers.field(entry2.getKey(),this.getAnalyzer_Filters());
 											 }else {
-												 System.out.println("analyzer debug2");
 
 												 analyzers.field(entry2.getKey(),entry2.getValue());
 
 											 }
+
 										 }
+										 this.analyzerCreated.put(entry2.getKey(), entry2.getValue().toString());
+ 
 									 }
 									 analyzers.endObject();
 
@@ -122,10 +129,13 @@ public class ImnetAnalyzer {
 											 }else{
 											 analyzers.field(entry2.getKey(),entry2.getValue());}
 										 }
+										 this.analyzerCreated.put(entry2.getKey(), entry2.getValue().toString());
+
 									 }
 									 analyzers.endObject();
 
 								 }
+								 
 
 							 }
 						
@@ -139,10 +149,7 @@ public class ImnetAnalyzer {
 	}
 
 
-		public List<String> generatorFilterRaw(ImnetFilter ff) throws IOException {
-			ImnetFilter f=ff;
-			
-			
+		public List<String> generatorFilterRaw(ImnetFilter f) throws IOException {
 			f.getFilterXContent();
 			return f.getFilterCreated();
 		}

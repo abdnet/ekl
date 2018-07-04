@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -28,7 +29,8 @@ public class ImnetFilter {
 	private List<String> filterCreated =new ArrayList<String>();
 	private boolean isObject,isValid;
 	private  XContentBuilder filter;
-	
+	private static Logger logger = Logger.getLogger(ImnetFilter.class);
+
 	
 	
 	public ImnetFilter(String filter_name, boolean filter_default, Map<String, Map<String, Object>> filter_object,
@@ -107,13 +109,16 @@ public class ImnetFilter {
 
 
 	public XContentBuilder getFilterXContent() throws IOException {
-
-						 filter= XContentFactory.jsonBuilder();
+						logger.debug("getFilterXContent : Début");
+						filter= XContentFactory.jsonBuilder();
 						filter.startObject();
 						if(this.filter_object!=null) {
+							logger.debug("Filter avec option : Début");
+
 							if(!this.isADefaultFilterMap(this.filter_object)) {
 								for(Entry<String,Map<String,Object>> entry:this.filter_object.entrySet()) {
 									if(entry.getValue()==null) {
+										logger.debug("Filter par défaut est détecté ");
 										this.getdefaultfilter().add(entry.getKey());
 
 									}else{
@@ -124,7 +129,6 @@ public class ImnetFilter {
 												filter.field(option.getKey(),option.getValue());
 											}
 											this.filterCreated.add(entry.getKey());
-
 											filter.endObject();
 										}
 									}
@@ -140,8 +144,7 @@ public class ImnetFilter {
 							this.isdefaultfilter();
 
 					}
-				System.out.println(filter.endObject().string());
-				return filter;			
+				return filter.endObject();			
 	}
 
 	
@@ -150,7 +153,7 @@ public class ImnetFilter {
 			if(ElasticSearchReservedFilters.filters.contains(filter)&&!this.filterCreated.contains(filter))
 				this.filterCreated.add(filter);
 			else
-				System.out.println("[ WARN ] le filter * "+filter+" * n'est pas valide");
+				logger.warn(" le filter * "+filter+" * n'est pas valide");
 		}
 	}
 

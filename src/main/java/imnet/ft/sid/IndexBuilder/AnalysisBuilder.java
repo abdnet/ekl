@@ -1,7 +1,10 @@
 package imnet.ft.sid.IndexBuilder;
 
+import java.io.IOException;
 import java.util.*;
 
+import imnet.ft.commun.util.ElasticSearchReservedFilters;
+import imnet.ft.commun.util.ElasticSearchReservedWords;
 import imnet.ft.sid.Index.ImnetAnalysis;
 import imnet.ft.sid.Index.ImnetAnalyzer;
 import imnet.ft.sid.Index.ImnetCharFilter;
@@ -31,6 +34,7 @@ public class AnalysisBuilder {
 		return this;
 	}
 	public AnalysisBuilder setImnetFilter(ImnetFilter imnetFilter) {
+		
 		this.listFilter.add(imnetFilter);
 		return this;
 	}

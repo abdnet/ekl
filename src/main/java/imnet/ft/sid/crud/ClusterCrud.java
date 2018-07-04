@@ -33,10 +33,6 @@ public class ClusterCrud {
 	public void createNewIndex(String title,XContentBuilder schema) {
 		logger.info("ClusterCrud : Creation d'un nouveau index : En cours");
 		CreateIndexResponse createIndex = null;
-		System.out.println("##################################################");
-		System.out.println(schema.bytes().utf8ToString());
-		System.out.println("##################################################");
-
 			createIndex = client.admin()
 					.indices()
 					.prepareCreate(title.toLowerCase())
@@ -47,7 +43,7 @@ public class ClusterCrud {
 			if(createIndex.isAcknowledged())
 				logger.info("Création d'un nouveau index : Ok! ");
 			else
-				logger.warn("Création d'un nouveau index --> ES response [" + createIndex.isAcknowledged()+"]");
+				logger.error("Création d'un nouveau index --> ES response [" + createIndex.isAcknowledged()+"]");
 	}
 	
 	
@@ -59,7 +55,7 @@ public class ClusterCrud {
 		    Settings settings = cursor.value;                                               
 		    Integer shards = settings.getAsInt("index.number_of_shards", null);             
 		    Integer replicas = settings.getAsInt("index.number_of_replicas", null);
-		    System.out.println("index key "+index+" shards "+shards+" replicas "+replicas+" \n\n settings "+settings.size());
+		    logger.info("index key "+index+" shards "+shards+" replicas "+replicas+" \n\n settings "+settings.size());
 		}
 	}
 	
@@ -76,7 +72,7 @@ public class ClusterCrud {
     	    int numberOfReplicas = health.getNumberOfReplicas();    
     	    ClusterHealthStatus status = health.getStatus();
     	    
-    	    System.out.println("Cluster "+healths.getUnassignedShards()+" index "+index+" shards "+numberOfShards+" replicat "+numberOfReplicas+" status "+status.name());
+    	    logger.info("Cluster "+healths.getUnassignedShards()+" index "+index+" shards "+numberOfShards+" replicat "+numberOfReplicas+" status "+status.name());
     	}
 	}
 	

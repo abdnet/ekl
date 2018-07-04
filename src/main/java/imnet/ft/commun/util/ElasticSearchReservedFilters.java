@@ -24,6 +24,7 @@ public interface ElasticSearchReservedFilters {
 			  "truncate",
 			  "pattern_capture", //pour l'adresse mail ou postal
 			  "trim",
+			  "icu_folding",
 			  "five_token_limit" //Limite le nombre de jetons indexés par document et par champ.
 			  );
 
@@ -37,7 +38,8 @@ public interface ElasticSearchReservedFilters {
 			  "classic",
 			  "ngram",//par defaut min=1,max=2 et token_chars=null (letter,digit,whitespace,punctuation,symbol)
 			  "edge_ngram",
-			  "path_hierarchy"
+			  "path_hierarchy",
+			  "icu_tokenizer"
 			  );
 	  
 	  
