@@ -107,12 +107,13 @@ public class IndexSchema  {
 				XContentParser mappingsParser = XContentFactory.xContent(XContentType.JSON).createParser(NamedXContentRegistry.EMPTY,mappings.getFieldsXContent(mappingsXContent).bytes().utf8ToString());
 
 				schemaIndex.startObject();
+					
 					schemaIndex.field(ElasticSearchReservedWords.SETTINGS.getText())
 						.copyCurrentStructure(settingsParser);
 				
-			   schemaIndex.field(ElasticSearchReservedWords.MAPPINGS.getText())
+					schemaIndex.field(ElasticSearchReservedWords.MAPPINGS.getText())
 						.copyCurrentStructure(mappingsParser);
-		
+			   
 				
 //				schemaIndex.startObject(ElasticSearchReservedWords.MAPPINGS.getText())
 //				.startObject(ElasticSearchReservedWords.TYPE.getText())

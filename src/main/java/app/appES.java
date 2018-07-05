@@ -49,6 +49,7 @@ public class appES {
 				    put("type","edge_ngram");
 				    put("min_gram", 1);
 				    put("max_gram", 20);
+				    put("msax_gram", 20);
 			
 				}};
 				
@@ -152,11 +153,13 @@ public class appES {
 		
 		
 		ImnetSettings settings = new SettingsBuilder()
-				.setReplicas(4)
-				.setShards(2)
+				.setReplicas(1)
+				.setShards(5		)
 				.setAnalysis(analysis)
 				.build();
 		System.out.println("********************* Mappings index ****************");
+		
+		
 		MyFields field1 = new MyFields()
 				.setFiled_name("ID_DOCUMENT")
 				.setField_type(ElasticSearchReservedWords.KEYWORD.getText())
@@ -168,15 +171,25 @@ public class appES {
 				.setFiled_name("VERSION_DOCUMENT")
 				.setField_type("double")
 				.setField_stored(true);
+		
 		MyFields field2 = new MyFields()
 				.setFiled_name("DATE_UPLOAD_DOCUMENT")
 				.setField_type("text")
 				.setField_stored(true);
+		
 		MyFields field4 = new MyFields()
 				.setFiled_name("CONTENT_DOCUMENT")
 				.setField_type("text")
 				.setField_analyzer("nGram_analyzer")
 				.setField_search_analyzer("body_analyzer")
+				.setField_copyTO("FULL_TEXT")
+				.setField_stored(false)
+				.setField_indexed(true);
+		
+		
+		MyFields field5 = new MyFields()
+				.setFiled_name("FULL_TEXT")
+				.setField_type("text")
 				.setField_stored(false)
 				.setField_indexed(true);
 		
@@ -184,6 +197,8 @@ public class appES {
 				.setFields(field1)
 				.setFields(field3)
 				.setFields(field4)
+				.setFields(field2)
+				.setFields(field5)
 				.setField_others_option(null)
 				.build();
 
@@ -205,6 +220,8 @@ public class appES {
 
 		client.deleteIndex("idouhammou");
 		client.createNewIndex("idouhammou", schema.indexDefaultInit());
+		System.out.println("******************* SCHEMA **************************");
+		System.out.println(schema.indexDefaultInit().bytes().utf8ToString());
 		client.getIndexInfo("idouhammou", "");
 		//client.getAllIndex("");
 		

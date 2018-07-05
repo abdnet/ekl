@@ -49,7 +49,18 @@ public class ImnetMapping {
 	
 
 	
-	
+	public boolean isExistField(String field) {
+		boolean exist = false;
+		if(!field.equals("")) {
+			for(MyFields field_str:this.fields) {
+				if(field_str.getFiled_name().toLowerCase().equals(field.toLowerCase())) {
+					return !exist;
+				}
+			}
+		}
+		
+		return exist;
+	}
 	
 		
 	
@@ -68,6 +79,7 @@ public class ImnetMapping {
 								schemaIndex.field(ElasticSearchReservedWords.STORE.getText(),field.isField_stored());
 								if(field.getField_analyzer()!=null) schemaIndex.field(ElasticSearchReservedWords.ANALYZER.getText(),field.getField_analyzer());
 								if(field.getField_search_analyzer()!=null)schemaIndex.field(ElasticSearchReservedWords.SEARCH_ANALYZER.getText(),field.getField_search_analyzer());
+								if(!field.getField_copyTO().equals("")&&this.isExistField(field.getField_copyTO())) schemaIndex.field(ElasticSearchReservedWords.COPY_TO.getText(),field.getField_copyTO());
 								schemaIndex.endObject();
 							}
 							
